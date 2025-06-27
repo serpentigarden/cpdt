@@ -499,7 +499,6 @@ We are almost done.  The lefthand and righthand sides can be seen to match by si
   reflexivity.
 Qed.
 (* end thide *)
-(* BOOKMARK: p31 *)
 
 (** This proof can be shortened and automated, but we leave that task as an exercise for the reader. *)
 

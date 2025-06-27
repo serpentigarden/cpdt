@@ -142,7 +142,6 @@ Qed.
 (** Because [Empty_set] has no elements, the fact of having an element of this type implies anything.  We use [destruct 1] instead of [destruct x] in the proof because unused quantified variables are relegated to being referred to by number.  (There is a good reason for this, related to the unity of quantifiers and implication.  At least within Coq's logical foundation of %\index{constructive logic}%constructive logic, which we elaborate on more in the next chapter, an implication is just a quantification over a proof, where the quantified variable is never used.  It generally makes more sense to refer to implication hypotheses by number than by name, and Coq treats our quantifier over an unused variable as an implication in determining the proper behavior.)
 
 We can see the induction principle that made this proof so easy: *)
-
 Check Empty_set_ind.
 (** [Empty_set_ind : forall (P : Empty_set -> Prop) (e : Empty_set), P e] *)
 
@@ -196,12 +195,7 @@ subgoal 2 is
 The first subgoal follows by Coq's rules of computation, so we can dispatch it easily: *)
 
   reflexivity.
-
-(** Likewise for the second subgoal, so we can restart the proof and give a very compact justification.%\index{Vernacular commands!Restart}% *)
-
-Restart.
-
-  destruct b; reflexivity.
+  reflexivity.
 Qed.
 (* end thide *)
 
@@ -299,10 +293,13 @@ We can start out by using computation to simplify the goal as far as we can.%\in
 
 (** Not much really went on in this proof, so the [crush] tactic from the [CpdtTactics] module can prove this theorem automatically. *)
 
+(*  
+ Restart command is not supported by the VsCode extension, just skipping this
 Restart.
-
   induction n; crush.
-Qed.
+
+Qed. *)
+Abort.
 (* end thide *)
 
 (** We can check out the induction principle at work here: *)
@@ -322,6 +319,17 @@ Theorem S_inj : forall n m : nat, S n = S m -> n = m.
   injection 1; trivial.
 Qed.
 (* end thide *)
+
+(* More fleshed out version*)
+Theorem S_inj' : forall n m : nat, S n = S m -> n = m.
+(* begin thide *)
+  intros.
+  (* If injection only works on premises, that's probably why it got H from 1. *)
+  injection H.
+  trivial.
+Qed.
+
+Print congruence.
 
 (** The [injection] tactic refers to a premise by number, adding new equalities between the corresponding arguments of equated terms that are formed with the same constructor.  We end up needing to prove [n = m -> n = m], so it is unsurprising that a tactic named [trivial] is able to finish the proof.  This tactic attempts a variety of single proof steps, drawn from a user-specified database that we will later see how to extend.
 
@@ -419,7 +427,7 @@ Check nat_btree_ind.
 We have the usual two cases, one for each constructor of [nat_btree]. *)
 
 
-(** * Parameterized Types *)
+(** * Parameterized Types p50. *)
 
 (** We can also define %\index{polymorphism}%polymorphic inductive types, as with algebraic datatypes in Haskell and ML.%\index{Gallina terms!list}\index{Gallina terms!Nil}\index{Gallina terms!Cons}\index{Gallina terms!length}\index{Gallina terms!app}% *)
 
