@@ -403,7 +403,8 @@ Theorem plus_assoc : forall n1 n2 n3 : nat, plus (plus n1 n2) n3 = plus n1 (plus
 Qed.
 (* end thide *)
 
-Hint Rewrite n_plus_O plus_assoc.
+(* Hint Rewrite n_plus_O plus_assoc. *)
+Hint Rewrite plus_assoc.
 
 Theorem nsize_nsplice : forall tr1 tr2 : nat_btree, nsize (nsplice tr1 tr2)
   = plus (nsize tr2) (nsize tr1).
