@@ -1,0 +1,1 @@
+Exercises from http://adam.chlipala.net/cpdt/ex/exercises.pdf
