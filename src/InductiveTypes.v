@@ -1182,7 +1182,7 @@ Qed.
 
 We can perform a similar manual proof of injectivity of the constructor [S].  I leave a walk-through of the details to curious readers who want to run the proof script interactively. *)
 
-Theorem S_inj' : forall n m : nat, S n = S m -> n = m.
+Theorem S_inj''' : forall n m : nat, S n = S m -> n = m.
 (* begin thide *)
   intros n m H.
   change (pred (S n) = pred (S m)).
