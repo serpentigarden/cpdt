@@ -63,6 +63,7 @@ CoInductive evilStream := Nil.
    We can define a stream consisting only of zeroes.%\index{Vernacular commands!CoFixpoint}% *)
 
 CoFixpoint zeroes : stream nat := Cons 0 zeroes.
+(* Bookmark: p88 *)
 
 (* EX: Define a stream that alternates between [true] and [false]. *)
 (* begin thide *)
@@ -106,12 +107,6 @@ Eval simpl in approx trues_falses 10.
 *)
 
 (* end thide *)
-
-(* begin hide *)
-(* begin thide *)
-Definition looper := 0.
-(* end thide *)
-(* end hide *)
 
 (** So far, it looks like co-inductive types might be a magic bullet, allowing us to import all of the Haskeller's usual tricks.  However, there are important restrictions that are dual to the restrictions on the use of inductive types.  Fixpoints _consume_ values of inductive types, with restrictions on which _arguments_ may be passed in recursive calls.  Dually, co-fixpoints _produce_ values of co-inductive types, with restrictions on what may be done with the _results_ of co-recursive calls.
 
@@ -294,7 +289,9 @@ Guarded.
      
      We need to start the co-induction by applying [stream_eq]'s constructor.  To do that, we need to know that both arguments to the predicate are [Cons]es.  Informally, this is trivial, but [simpl] is not able to help us. *)
 
-  Undo.
+  Abort.
+
+Theorem ones_eq : stream_eq ones ones'.
   simpl.
   (** [[
   ones_eq : stream_eq ones ones'
@@ -560,7 +557,7 @@ Definition var := nat.
 
 Definition vars := var -> nat.
 Definition set (vs : vars) (v : var) (n : nat) : vars :=
-  fun v' => if beq_nat v v' then n else vs v'.
+  fun v' => if Nat.eqb v v' then n else vs v'.
 
 (** We define a simple arithmetic expression language with variables, and we give it a semantics via an interpreter. *)
 

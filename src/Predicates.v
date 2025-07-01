@@ -18,7 +18,7 @@ Set Asymmetric Patterns.
 (* Extra definitions to get coqdoc to choose the right fonts. *)
 
 (* begin thide *)
-Inductive unit := tt.
+(* Inductive unit := tt. *)
 Inductive Empty_set := .
 Inductive bool := true | false.
 Inductive sum := .
@@ -27,7 +27,7 @@ Inductive and := conj.
 Inductive or := or_introl | or_intror.
 Inductive ex := ex_intro.
 Inductive eq := eq_refl.
-Reset unit.
+(* Reset unit. *)
 (* end thide *)
 (* end hide *)
 
@@ -104,7 +104,7 @@ We have also already seen the definition of [True].  For a demonstration of a lo
 
     (** At this point, we have an inconsistent hypothesis [2 + 2 = 5], so the specific conclusion is not important.  We use the %\index{tactics!elimtype}%[elimtype] tactic.  For a full description of it, see the Coq manual.  For our purposes, we only need the variant [elimtype False], which lets us replace any conclusion formula with [False], because any fact follows from an inconsistent context. *)
 
-    elimtype False.
+    (*elim False.*)
     (** [[
   H : 2 + 2 = 5
   ============================
@@ -249,11 +249,11 @@ subgoal 2 is
 (* begin thide *)
     unfold not.
     intros.
-    elimtype False.
-    apply H0.
+    (* Don't get what destruct does *)
+    destruct H0.
     assumption.
 (* end thide *)
-  Admitted.
+  Qed.
 
   Theorem and_assoc : (P /\ Q) /\ R -> P /\ (Q /\ R).
 (* begin thide *)
@@ -421,7 +421,6 @@ Theorem exist2 : forall n m : nat, (exists x : nat, n + x = m) -> n <= m.
    ]]
 
    The goal has been replaced by a form where there is a new free variable [x], and where we have a new hypothesis that the body of the existential holds with [x] substituted for the old bound variable.  From here, the proof is just about arithmetic and is easy to automate. *)
-
   crush.
 (* end thide *)
 Qed.
@@ -497,8 +496,7 @@ Qed.
 Theorem isZero_contra : isZero 1 -> False.
 (* begin thide *)
   (** Let us try a proof by cases on the assumption, as in the last proof. *)
-
-  destruct 1.
+  (* destruct 1. *)
   (** [[
   ============================
    False
@@ -508,8 +506,6 @@ Theorem isZero_contra : isZero 1 -> False.
    It seems that case analysis has not helped us much at all!  Our sole hypothesis disappears, leaving us, if anything, worse off than we were before.  What went wrong?  We have met an important restriction in tactics like [destruct] and [induction] when applied to types with arguments.  If the arguments are not already free variables, they will be replaced by new free variables internally before doing the case analysis or induction.  Since the argument [1] to [isZero] is replaced by a fresh variable, we lose the crucial fact that it is not equal to [0].
 
      Why does Coq use this restriction?  We will discuss the issue in detail in a future chapter, when we see the dependently typed programming techniques that would allow us to write this proof term manually.  For now, we just say that the algorithmic problem of "logically complete case analysis" is undecidable when phrased in Coq's logic.  A few tactics and design patterns that we will present in this chapter suffice in almost all cases.  For the current example, what we want is a tactic called %\index{tactics!inversion}%[inversion], which corresponds to the concept of inversion that is frequently used with natural deduction proof systems.  (Again, worry not if the semantics-oriented terminology from this last sentence is unfamiliar.) *)
-
-  Undo.
   inversion 1.
 (* end thide *)
 Qed.
@@ -635,7 +631,7 @@ Theorem even_plus : forall n m, even n -> even m -> even (n + m).
 (* begin thide *)
   (** It seems a reasonable first choice to proceed by induction on [n]. *)
 
-  induction n; crush.
+  (*induction n; crush.
   (** [[
   n : nat
   IHn : forall m : nat, even n -> even m -> even (n + m)
@@ -673,7 +669,7 @@ Theorem even_plus : forall n m, even n -> even m -> even (n + m).
    ]]
    *)
 
-  constructor.
+  constructor. *)
 
 (** [[
   ============================
@@ -692,9 +688,7 @@ Theorem even_plus : forall n m, even n -> even m -> even (n + m).
 
   Recall that tactics like [induction] and [destruct] may be passed numbers to refer to unnamed lefthand sides of implications in the conclusion, where the argument [n] refers to the [n]th such hypothesis. *)
 
-Restart.
-
-  induction 1.
+  (*induction 1.
 (** [[
   m : nat
   ============================
@@ -737,11 +731,9 @@ Restart.
 
    Now we have an exact match with our inductive hypothesis, and the remainder of the proof is trivial. *)
 
-  apply IHeven; assumption.
+  apply IHeven; assumption. *)
 
   (** In fact, [crush] can handle all of the details of the proof once we declare the induction strategy. *)
-
-Restart.
 
   induction 1; crush.
 (* end thide *)
@@ -797,13 +789,13 @@ Lemma even_contra' : forall n', even n' -> forall n, n' = S (n + n) -> False.
   rewrite <- plus_n_Sm in H0.
 
   (** The induction hypothesis lets us complete the proof, if we use a variant of [apply] that has a %\index{tactics!with}%[with] clause to give instantiations of quantified variables. *)
-
   apply IHeven with n0; assumption.
 
   (** As usual, we can rewrite the proof to avoid referencing any locally generated names, which makes our proof script more readable and more robust to changes in the theorem statement.  We use the notation [<-] to request a hint that does right-to-left rewriting, just like we can with the [rewrite] tactic. *)
 
-  Restart.
-
+Abort.
+Lemma even_contra' : forall n', even n' -> forall n, n' = S (n + n) -> False.
+  
   Hint Rewrite <- plus_n_Sm.
 
   induction 1; crush;
