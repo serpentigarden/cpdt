@@ -1,3 +1,5 @@
+(* http://adam.chlipala.net/cpdt/ex/exercises.pdf *)
+
 Require Import List.
 
 Require Import Cpdt.CpdtTactics.
@@ -47,7 +49,8 @@ Section inductivetypes.
     Theorem and_distributes_over_or:
         forall t1 t2 t3: truth, 
             and t1 (or t2 t3) = or (and t1 t2) (and t1 t3). 
-
+        induction t1; induction t2; induction t3; reflexivity.
+    Qed.
     
 End inductivetypes.
 
